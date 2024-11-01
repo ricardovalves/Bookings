@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block title %}Welcome - Party Room Booking{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8 text-center">
+        <h1 class="display-4">Welcome to Party Room Booking</h1>
+        <p class="lead">Book the party room for your next event!</p>
+        <a href="{{ url_for('login') }}" class="btn btn-primary btn-lg">Login to Book</a>
+    </div>
+</div>
+{% endblock %} 

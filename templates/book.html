@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+
+{% block title %}Book Room - Party Room Booking{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<link href='https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.css' rel='stylesheet' />
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <!-- Calendar View -->
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="mb-0">Available Time Slots</h4>
+            </div>
+            <div class="card-body">
+                <div id="calendar"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Booking Form -->
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="mb-0">Book Party Room</h4>
+            </div>
+            <div class="card-body">
+                {% with messages = get_flashed_messages() %}
+                    {% if messages %}
+                        {% for message in messages %}
+                            <div class="alert alert-danger">{{ message }}</div>
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+                <form method="POST" id="bookingForm">
+                    <div class="mb-3">
+                        <label for="start_time" class="form-label">Start Time</label>
+                        <input type="datetime-local" class="form-control" id="start_time" name="start_time" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="end_time" class="form-label">End Time</label>
+                        <input type="datetime-local" class="form-control" id="end_time" name="end_time" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">Book Room</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src='https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.js'></script>
+<script src="{{ url_for('static', filename='js/app.js') }}" defer></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const calendarEl = document.getElementById('calendar');
+        const calendar = new FullCalendar.Calendar(calendarEl, {
+            initialView: 'timeGridWeek',
+            slotMinTime: '08:00:00',
+            slotMaxTime: '22:00:00',
+            allDaySlot: false,
+            height: 'auto',
+            slotDuration: '00:30:00',
+            headerToolbar: {
+                left: 'prev,next today',
+                center: 'title',
+                right: 'timeGridWeek,timeGridDay'
+            },
+            events: {{ bookings|tojson|safe }},
+            selectable: true,
+            select: function(info) {
+                document.getElementById('start_time').value = info.startStr;
+                document.getElementById('end_time').value = info.endStr;
+            },
+            eventClick: function(info) {
+                info.jsEvent.preventDefault();
+            },
+            businessHours: {
+                daysOfWeek: [0, 1, 2, 3, 4, 5, 6],
+                startTime: '08:00',
+                endTime: '22:00',
+            }
+        });
+        calendar.render();
+    });
+</script>
+{% endblock %} 

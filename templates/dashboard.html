@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - Party Room Booking{% endblock %}
+
+{% block content %}
+<h2>Your Bookings</h2>
+<div class="table-responsive">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Start Time</th>
+                <th>End Time</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for booking in bookings %}
+            <tr>
+                <td>{{ booking.start_time.strftime('%Y-%m-%d') }}</td>
+                <td>{{ booking.start_time.strftime('%H:%M') }}</td>
+                <td>{{ booking.end_time.strftime('%H:%M') }}</td>
+                <td>
+                    <button class="btn btn-danger btn-sm">Cancel</button>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %} 
